@@ -10,10 +10,27 @@ resource "aws_iam_policy" "bedrock_policy" {
         Action = [
           "bedrock:InvokeModel",
           "bedrock:ListFoundationModels",
-          "bedrock:GetModel",
-          "bedrock:GetFoundationModel"
+          "bedrock:GetFoundationModel",
+          "bedrock:GetFoundationModelAvailability",
+          "bedrock:ListInferenceProfiles"
         ]
         Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "assume_role_policy" {
+  name        = "allow-assume-bedrock-role"
+  description = "Policy allowing assumption of the Bedrock role"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/bedrock-assume-role"
       }
     ]
   })
