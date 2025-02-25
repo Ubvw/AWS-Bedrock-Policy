@@ -43,28 +43,6 @@ resource "aws_iam_role" "bedrock_role" {
 # IAM Policy definitions #
 ##########################
 
-resource "aws_iam_policy" "bedrock_policy" {
-  name        = "bedrock-minimal-access"
-  description = "Minimal access policy for AWS Bedrock"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "bedrock:InvokeModel",
-          "bedrock:ListFoundationModels",
-          "bedrock:GetFoundationModel",
-          "bedrock:GetFoundationModelAvailability",
-          "bedrock:ListInferenceProfiles"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
-
 resource "aws_iam_policy" "assume_role_policy" {
   name        = "allow-assume-bedrock-role"
   description = "Policy allowing assumption of the Bedrock role"
@@ -86,9 +64,9 @@ resource "aws_iam_policy" "assume_role_policy" {
 # Contains all policy attachments#
 ##################################
 
-resource "aws_iam_role_policy_attachment" "bedrock_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "bedrock_full_access_attachment" {
   role       = aws_iam_role.bedrock_role.name
-  policy_arn = aws_iam_policy.bedrock_policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/BedrockFullAccess"
 }
 
 resource "aws_iam_user_policy_attachment" "user_assume_role" {
